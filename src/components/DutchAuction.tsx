@@ -262,11 +262,11 @@ export function DutchAuction(): ReactElement {
 
           let refundValue = {      
             // The amount to send with the transaction (i.e. msg.value)
-            value: utils.parseEther(bidValueInput)
+            value: utils.parseEther(bidValueInput),
           };
-        const setBidTxn = await dutchAuctionContract.refund(refundValue);
+        const setRfTxn = await dutchAuctionContract.refund(refundValue);
 
-        await setBidTxn.wait();
+        await setRfTxn.wait();
         window.alert(`Congratulation, Refund success!`);
 
       } catch (error: any) {
