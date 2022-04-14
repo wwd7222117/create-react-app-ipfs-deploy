@@ -257,6 +257,11 @@ export function DutchAuction(): ReactElement {
       return;
     }
 
+    if (!bidValueInput) {
+      window.alert('bidValueInput cannot be empty');
+      return;
+    }
+
     async function Refund(dutchAuctionContract: Contract): Promise<void> {
       try {
 
