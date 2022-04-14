@@ -1,5 +1,4 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { Button } from 'antd';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import {
   NoEthereumProviderError,
@@ -46,6 +45,22 @@ const StyledActivateDeactivateDiv = styled.div`
   align-items: center;
 `;
 
+const StyledActivateButton = styled.button`
+  width: 150px;
+  height: 2rem;
+  border-radius: 1rem;
+  border-color: green;
+  cursor: pointer;
+`;
+
+const StyledDeactivateButton = styled.button`
+  width: 150px;
+  height: 2rem;
+  border-radius: 1rem;
+  border-color: red;
+  cursor: pointer;
+`;
+
 function Activate(): ReactElement {
   const context = useWeb3React<Provider>();
   const { activate, active } = context;
@@ -73,9 +88,16 @@ function Activate(): ReactElement {
   useInactiveListener(!eagerConnectionSuccessful);
 
   return (
-    <Button disabled={active} type="primary"  onClick={handleActivate}>
+    <StyledActivateButton
+      disabled={active}
+      style={{
+        cursor: active ? 'not-allowed' : 'pointer',
+        borderColor: activating ? 'orange' : active ? 'unset' : 'green'
+      }}
+      onClick={handleActivate}
+    >
       Connect
-    </Button>
+    </StyledActivateButton>
   );
 }
 
@@ -90,9 +112,16 @@ function Deactivate(): ReactElement {
   }
 
   return (
-    <Button disabled={!active} type="primary" danger onClick={handleDeactivate}>
+    <StyledDeactivateButton
+      disabled={!active}
+      style={{
+        cursor: active ? 'pointer' : 'not-allowed',
+        borderColor: active ? 'red' : 'unset'
+      }}
+      onClick={handleDeactivate}
+    >
       Disconnect
-    </Button>
+    </StyledDeactivateButton>
   );
 }
 
