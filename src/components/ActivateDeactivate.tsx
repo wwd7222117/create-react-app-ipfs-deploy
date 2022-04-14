@@ -46,19 +46,77 @@ const StyledActivateDeactivateDiv = styled.div`
 `;
 
 const StyledActivateButton = styled.button`
+
+  appearance: button;
+  background-color: #1899D6;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: din-round,sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  line-height: 5px;
+  margin: 0;
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter .2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  //width: 100%;
   width: 150px;
   height: 2rem;
-  border-radius: 1rem;
+  //border-radius: 1rem;
   border-color: green;
-  cursor: pointer;
+  //cursor: pointer;
+
 `;
 
 const StyledDeactivateButton = styled.button`
+  appearance: button;
+  background-color: #1899D6;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: din-round,sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  line-height: 5px;
+  margin: 0;
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter .2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  //width: 100%;
   width: 150px;
   height: 2rem;
-  border-radius: 1rem;
+  //border-radius: 1rem;red
   border-color: red;
-  cursor: pointer;
+  //cursor: pointer;
 `;
 
 function Activate(): ReactElement {
@@ -91,6 +149,7 @@ function Activate(): ReactElement {
     <StyledActivateButton
       disabled={active}
       style={{
+
         cursor: active ? 'not-allowed' : 'pointer',
         borderColor: activating ? 'orange' : active ? 'unset' : 'green'
       }}
