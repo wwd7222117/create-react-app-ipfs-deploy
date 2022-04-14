@@ -249,35 +249,6 @@ export function DutchAuction(): ReactElement {
     Finaliz(dutchAuctionContract);
   }
 
-  function handleDutchAuctionRefund(event: MouseEvent<HTMLButtonElement>): void {
-    event.preventDefault();
-
-    if (!dutchAuctionContract) {
-      window.alert('Undefined dutchAuctionContract');
-      return;
-    }
-
-    async function Refund(dutchAuctionContract: Contract): Promise<void> {
-      try {
-
-          let refundValue = {      
-            // The amount to send with the transaction (i.e. msg.value)
-            value: utils.parseEther(bidValueInput)
-          };
-        const setBidTxn = await dutchAuctionContract.refund(refundValue);
-
-        await setBidTxn.wait();
-        window.alert(`Congratulation, Refund success!`);
-
-      } catch (error: any) {
-        window.alert(
-          'Refund fail' + (error && error.message ? `\n\n${error.message}` : '')
-        );
-      }
-    }
-
-    Refund(dutchAuctionContract);
-  }  
 
   
   function handleOfferPriceDecrementChange(event: ChangeEvent<HTMLInputElement>): void {
@@ -408,17 +379,6 @@ export function DutchAuction(): ReactElement {
           Finalize
         </StyledButton2>
 
-        <StyledButton2
-          disabled={!active || !dutchAuctionContract ? true : false}
-          style={{
-            cursor: !active || !dutchAuctionContract ? 'not-allowed' : 'pointer',
-            borderColor: !active || !dutchAuctionContract ? 'unset' : 'blue',
-            
-          }}
-          onClick={handleDutchAuctionRefund}
-        >
-          Refund
-        </StyledButton2>
        
 
       </StyledDutchAuctionDiv>
