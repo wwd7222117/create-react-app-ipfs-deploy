@@ -1,6 +1,5 @@
 import { useWeb3React } from '@web3-react/core';
 import { Contract, ethers, Signer } from 'ethers';
-import { Button, Input, Form, Row, Col } from 'antd';
 import { utils } from 'ethers/lib/';
 import {
   ChangeEvent,
@@ -13,6 +12,17 @@ import styled from 'styled-components';
 import DutchAuctionArtifact from '../artifacts/contracts/DutchAuction.sol/DutchAuction.json';
 import { Provider } from '../utils/provider';
 import { SectionDivider } from './SectionDivider';
+
+
+
+const StyledDeployContractButton = styled.button`
+  width: 180px;
+  height: 2rem;
+  border-radius: 1rem;
+  border-color: blue;
+  cursor: pointer;
+  place-self: center;
+`;
 
 const StyledDutchAuctionDiv = styled.div`
   display: grid;
@@ -27,25 +37,41 @@ const StyledLabel = styled.label`
   font-weight: bold;
 `;
 
+const StyledInput = styled.input`
+  padding: 0.4rem 0.6rem;
+  line-height: 2fr;
+`;
+
+const StyledButton = styled.button`
+  width: 150px;
+  height: 2rem;
+  border-radius: 1rem;
+  border-color: blue;
+  cursor: pointer;
+`;
+
+const StyledButton2 = styled.button`
+  width: 120px;
+  height: 2rem;
+  border-radius: 1rem;
+  border-color: blue;
+  cursor: pointer;
+`;
+
 export function DutchAuction(): ReactElement {
   const context = useWeb3React<Provider>();
   const { library, active } = context;
 
   const [signer, setSigner] = useState<Signer>();
   const [dutchAuctionContract, setDutchAuctionContract] = useState<Contract>();
-  const [dutchAuctionContractAddr, setDutchAuctionContractAddr] =
-    useState<string>('');
-  const [dutchAuctionReservePrice, setDutchAuctionReservePrice] =
-    useState<string>('');
-  const [dutchAuctionJudgeAddress, setDutchAuctionJudgeAddress] =
-    useState<string>('');
-  const [
-    dutchAuctionNumBlocksAuctionOpen,
-    setDutchAuctionNumBlocksAuctionOpen
-  ] = useState<string>('');
-  const [dutchAuctionOfferPriceDecrement, setDutchAuctionOfferPriceDecrement] =
-    useState<string>('');
+  const [dutchAuctionContractAddr, setDutchAuctionContractAddr] = useState<string>('');
+  const [dutchAuctionReservePrice, setDutchAuctionReservePrice] = useState<string>('');
+  const [dutchAuctionJudgeAddress, setDutchAuctionJudgeAddress] = useState<string>('');
+  const [dutchAuctionNumBlocksAuctionOpen, setDutchAuctionNumBlocksAuctionOpen] = useState<string>('');
+  const [dutchAuctionOfferPriceDecrement, setDutchAuctionOfferPriceDecrement] = useState<string>('');
   const [bidValueInput, setBidValueInput] = useState<string>('');
+
+
 
   function handleDeployContract(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
@@ -63,25 +89,19 @@ export function DutchAuction(): ReactElement {
       );
 
       try {
+
         var ReservePrice = dutchAuctionReservePrice;
         var offerPriceDecrement = dutchAuctionOfferPriceDecrement;
         var nReservePrice = utils.parseEther(ReservePrice);
         var nofferPriceDecrement = utils.parseEther(offerPriceDecrement);
         var judgeAddress = dutchAuctionJudgeAddress;
         var numBlocksAuctionOpen = dutchAuctionNumBlocksAuctionOpen;
-        const dutchAuctionContract = await DutchAuction.deploy(
-          nReservePrice,
-          judgeAddress,
-          numBlocksAuctionOpen,
-          nofferPriceDecrement
-        );
+        const dutchAuctionContract = await DutchAuction.deploy(nReservePrice,judgeAddress,numBlocksAuctionOpen,nofferPriceDecrement);
         await dutchAuctionContract.deployed();
 
         setDutchAuctionContract(dutchAuctionContract);
 
-        window.alert(
-          `DutchAuction deployed to: ${dutchAuctionContract.address}`
-        );
+        window.alert(`DutchAuction deployed to: ${dutchAuctionContract.address}`);
 
         setDutchAuctionContractAddr(dutchAuctionContract.address);
       } catch (error: any) {
@@ -94,6 +114,8 @@ export function DutchAuction(): ReactElement {
     deployDutchAuctionContract(signer);
   }
 
+
+
   useEffect((): void => {
     if (!library) {
       setSigner(undefined);
@@ -103,11 +125,14 @@ export function DutchAuction(): ReactElement {
     setSigner(library.getSigner());
   }, [library]);
 
+  
   useEffect((): void => {
     if (!dutchAuctionContract) {
       return;
     }
+
   }, [dutchAuctionContract]);
+
 
   function handleDutchAuctionBid(event: MouseEvent<HTMLButtonElement>): void {
     event.preventDefault();
@@ -124,18 +149,19 @@ export function DutchAuction(): ReactElement {
 
     async function Bid(dutchAuctionContract: Contract): Promise<void> {
       try {
-        let overrides = {
+
+        let overrides = {      
           // The amount to send with the transaction (i.e. msg.value)
-          value: utils.parseEther(bidValueInput)
-        };
+          value: utils.parseEther(bidValueInput),   
+      };
         const setBidTxn = await dutchAuctionContract.bid(overrides);
 
         await setBidTxn.wait();
         window.alert(`Congratulation, Bid success!`);
+
       } catch (error: any) {
         window.alert(
-          'Error bidvalue or bid is finished!' +
-            (error && error.message ? `\n\n${error.message}` : '')
+          'Error bidvalue or bid is finished!' + (error && error.message ? `\n\n${error.message}` : '')
         );
       }
     }
@@ -143,9 +169,8 @@ export function DutchAuction(): ReactElement {
     Bid(dutchAuctionContract);
   }
 
-  function handleDutchAuctionFinalize(
-    event: MouseEvent<HTMLButtonElement>
-  ): void {
+
+  function handleDutchAuctionFinalize(event: MouseEvent<HTMLButtonElement>): void {
     event.preventDefault();
 
     if (!dutchAuctionContract) {
@@ -155,14 +180,16 @@ export function DutchAuction(): ReactElement {
 
     async function Finaliz(dutchAuctionContract: Contract): Promise<void> {
       try {
+
+       
         const setBidTxn = await dutchAuctionContract.finalize();
 
         await setBidTxn.wait();
         window.alert(`Congratulation, Finalize success!`);
+
       } catch (error: any) {
         window.alert(
-          'Error or bid is not finish!' +
-            (error && error.message ? `\n\n${error.message}` : '')
+          'Error or bid is not finish!' + (error && error.message ? `\n\n${error.message}` : '')
         );
       }
     }
@@ -170,110 +197,86 @@ export function DutchAuction(): ReactElement {
     Finaliz(dutchAuctionContract);
   }
 
-  function handleOfferPriceDecrementChange(
-    event: ChangeEvent<HTMLInputElement>
-  ): void {
+
+  
+  function handleOfferPriceDecrementChange(event: ChangeEvent<HTMLInputElement>): void {
     event.preventDefault();
     setDutchAuctionOfferPriceDecrement(event.target.value);
   }
 
-  function handleJudgeAddressChange(
-    event: ChangeEvent<HTMLInputElement>
-  ): void {
+  
+  function handleJudgeAddressChange(event: ChangeEvent<HTMLInputElement>): void {
     event.preventDefault();
     setDutchAuctionJudgeAddress(event.target.value);
   }
-
-  function handleNumBlocksAuctionOpenChange(
-    event: ChangeEvent<HTMLInputElement>
-  ): void {
+  
+  function handleNumBlocksAuctionOpenChange(event: ChangeEvent<HTMLInputElement>): void {
     event.preventDefault();
     setDutchAuctionNumBlocksAuctionOpen(event.target.value);
   }
 
-  function handleBidValueInputChange(
-    event: ChangeEvent<HTMLInputElement>
-  ): void {
+
+  function handleBidValueInputChange(event: ChangeEvent<HTMLInputElement>): void {
     event.preventDefault();
     setBidValueInput(event.target.value);
   }
-
-  function handleReservePriceChange(
-    event: ChangeEvent<HTMLInputElement>
-  ): void {
+  
+  function handleReservePriceChange(event: ChangeEvent<HTMLInputElement>): void {
     event.preventDefault();
     setDutchAuctionReservePrice(event.target.value);
   }
 
   return (
     <>
-      <Form
-        style={{ padding: '0 100px' }}
-        layout="vertical"
-        name="basic"
-        // labelCol={{ span: 8 }}
-        wrapperCol={{ span: 24 }}
-        autoComplete="off"
+    
+    <StyledLabel htmlFor="reservePrice">reservePrice</StyledLabel>
+    <StyledInput
+      id="reservePrice"
+      type="text"
+    //  placeholder={greeting ? '' : '<Contract not yet deployed>'}
+      onChange={handleReservePriceChange}
+      style={{ fontStyle: 'normal'}}
+    ></StyledInput>
+
+
+    <StyledLabel htmlFor="judgeAddress">judgeAddress</StyledLabel>
+    <StyledInput
+      id="judgeAddress"
+      type="text"
+      onChange={handleJudgeAddressChange}
+      style={{ fontStyle: 'normal'}}
+    ></StyledInput>
+
+    <StyledLabel htmlFor="numBlocksAuctionOpen">numBlocksAuctionOpen</StyledLabel>
+    <StyledInput
+      id="numBlocksAuctionOpen"
+      type="text"
+      onChange={handleNumBlocksAuctionOpenChange}
+      style={{ fontStyle: 'normal'}}
+    ></StyledInput>
+
+
+    <StyledLabel htmlFor="offerPriceDecrement">offerPriceDecrement</StyledLabel>
+    <StyledInput
+      id="offerPriceDecrement"
+      type="text"
+      onChange={handleOfferPriceDecrementChange}
+      style={{ fontStyle: 'normal'}}
+    ></StyledInput>
+
+
+
+      <StyledDeployContractButton
+        disabled={!active || dutchAuctionContract ? true : false}
+        style={{
+          cursor: !active || dutchAuctionContract ? 'not-allowed' : 'pointer',
+          borderColor: !active || dutchAuctionContract ? 'unset' : 'blue'
+        }}
+        onClick={handleDeployContract}
       >
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item label="ReservePrice">
-              <Input
-                id="reservePrice"
-                type="text"
-                onChange={handleReservePriceChange}
-                style={{ fontStyle: 'normal' }}
-              ></Input>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="JudgeAddress">
-              <Input
-                id="judgeAddress"
-                type="text"
-                onChange={handleJudgeAddressChange}
-                style={{ fontStyle: 'normal' }}
-              ></Input>
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item label="NumBlocksAuctionOpen">
-              <Input
-                id="numBlocksAuctionOpen"
-                type="text"
-                onChange={handleNumBlocksAuctionOpenChange}
-                style={{ fontStyle: 'normal' }}
-              ></Input>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="OfferPriceDecrement">
-              <Input
-                id="offerPriceDecrement"
-                type="text"
-                onChange={handleOfferPriceDecrementChange}
-                style={{ fontStyle: 'normal' }}
-              ></Input>
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Form.Item wrapperCol={{ offset: 11 }}>
-          <Button
-            type="primary"
-            disabled={!active || dutchAuctionContract ? true : false}
-            onClick={handleDeployContract}
-          >
-            Deploy DutchAuction
-          </Button>
-        </Form.Item>
-      </Form>
-
+        Deploy DutchAuction
+      </StyledDeployContractButton>
       <SectionDivider />
-
       <StyledDutchAuctionDiv>
         <StyledLabel>Contract addr</StyledLabel>
         <div>
@@ -283,38 +286,52 @@ export function DutchAuction(): ReactElement {
             <em>{`<Contract not yet deployed>`}</em>
           )}
         </div>
-
+        
         {/* empty placeholder div below to provide empty first row, 3rd col div for a 2x3 grid */}
-
+     
         <div></div>
         <div></div>
 
-        {/* empty placeholder div below to provide empty first row, 3rd col div for a 2x3 grid */}
 
+        {/* empty placeholder div below to provide empty first row, 3rd col div for a 2x3 grid */}
+     
         <StyledLabel htmlFor="bidValueInput">Input Bidvalue</StyledLabel>
 
-        <Input
+        <StyledInput
           id="bidValueInput"
           type="text"
           onChange={handleBidValueInputChange}
-        />
+          style={{ fontStyle: 'normal'}}
+        ></StyledInput>
 
-        <Button
-          type="primary"
+        <StyledButton2
           disabled={!active || !dutchAuctionContract ? true : false}
+          style={{
+            cursor: !active || !dutchAuctionContract ? 'not-allowed' : 'pointer',
+            borderColor: !active || !dutchAuctionContract ? 'unset' : 'blue'
+          }}
           onClick={handleDutchAuctionBid}
         >
           Bid
-        </Button>
+        </StyledButton2>
 
-        <Button
-          type="primary"
+        <StyledButton2
           disabled={!active || !dutchAuctionContract ? true : false}
+          style={{
+            cursor: !active || !dutchAuctionContract ? 'not-allowed' : 'pointer',
+            borderColor: !active || !dutchAuctionContract ? 'unset' : 'blue',
+            
+          }}
           onClick={handleDutchAuctionFinalize}
         >
           Finalize
-        </Button>
+        </StyledButton2>
+
+       
+
       </StyledDutchAuctionDiv>
     </>
   );
+  
 }
+
